@@ -10,7 +10,23 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 
 USERS_FILE = "users.json"
+ADMIN_USER = os.environ.get("ADMIN_USER")
+ADMIN_PASS = os.environ.get("ADMIN_PASS")
 
+def ensure_admin():
+    if not ADMIN_USER or not ADMIN_PASS:
+        return
+    users = load_users()
+    uname = ADMIN_USER.strip().lower()
+
+    if uname not in users:
+        users[uname] = {"pw": generate_password_hash(ADMIN_PASS), "role": "admin"}
+        save_users(users)
+    else:
+        users[uname]["role"] = "admin"
+        if "pw" not in users[uname]:
+            users[uname]["pw"] = generate_password_hash(ADMIN_PASS)
+        save_users(users)
 
 # ----------------- USER HELPERS -----------------
 def load_users():
@@ -30,8 +46,6 @@ def current_user():
 def data_file_for(username: str):
     return f"kelimeler_{username}.json"
 
-
-# ----------------- LOGIN GUARD -----------------
 def login_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
@@ -39,6 +53,26 @@ def login_required(fn):
             return redirect(url_for("login"))
         return fn(*args, **kwargs)
     return wrapper
+
+# ----------------- LOGIN GUARD -----------------
+def is_admin(username: str | None = None) -> bool:
+    username = username or current_user()
+    if not username:
+        return False
+    users = load_users()
+    u = users.get(username, {})
+    return u.get("role") == "admin"
+
+def admin_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        if not current_user():
+            return redirect(url_for("login"))
+        if not is_admin():
+            return "403 Forbidden (admin only)", 403
+        return fn(*args, **kwargs)
+    return wrapper
+
 
 
 # ----------------- WORD HELPERS (per user) -----------------
@@ -726,7 +760,8 @@ def register():
             if username in users:
                 error = "Bu kullanıcı adı zaten var."
             else:
-                users[username] = {"pw": generate_password_hash(password)}
+                users[username] = {"pw": generate_password_hash(password), "role": "user"}
+
                 save_users(users)
                 session["user"] = username
                 return redirect(url_for("index"))
@@ -981,8 +1016,96 @@ def stats():
 </body>
 </html>
 """
+ADMIN_USERS_HTML = """
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin • Kullanıcılar</title>
+<style>
+body{font-family:system-ui;background:#0b1220;color:#eaf0ff;min-height:100vh;padding:24px}
+.card{max-width:900px;margin:0 auto;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px}
+a{color:#6ee7ff;text-decoration:none;font-weight:700}
+table{width:100%;border-collapse:separate;border-spacing:0 10px}
+th{color:#93a4c7;font-size:12px;text-align:left}
+td{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);padding:12px}
+tr td:first-child{border-radius:14px 0 0 14px}
+tr td:last-child{border-radius:0 14px 14px 0}
+.btn{padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#eaf0ff;font-weight:700;cursor:pointer}
+.btn.danger{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.12)}
+.small{color:#93a4c7;font-size:13px}
+</style></head><body>
+<div class="card">
+  <h2 style="margin:0 0 6px">Admin Panel • Kullanıcılar</h2>
+  <div class="small">Giriş yapan: <b>{{admin}}</b> • <a href="/">Quiz</a> • <a href="/logout">Çıkış</a></div>
+
+  <div style="margin-top:14px"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Kullanıcı</th>
+        <th>Rol</th>
+        <th>Kelime dosyası</th>
+        <th>İşlem</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td><b>{{u.username}}</b></td>
+        <td>{{u.role}}</td>
+        <td>{{u.data_file}}</td>
+        <td>
+          {% if u.username != admin %}
+            <form method="post" action="/admin/delete/{{u.username}}" onsubmit="return confirm('Silinsin mi?');" style="margin:0">
+              <button class="btn danger" type="submit">Sil</button>
+            </form>
+          {% else %}
+            <span class="small">Kendini silemezsin</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</body></html>
+"""
+
+@app.route("/admin/users")
+@admin_required
+def admin_users():
+    users = load_users()
+    rows = []
+    for uname, data in sorted(users.items()):
+        rows.append({
+            "username": uname,
+            "role": data.get("role", "user"),
+            "data_file": data_file_for(uname),
+        })
+    return render_template_string(ADMIN_USERS_HTML, users=rows, admin=current_user())
+
+@app.route("/admin/delete/<username>", methods=["POST"])
+@admin_required
+def admin_delete_user(username):
+    username = (username or "").strip().lower()
+    if not username or username == current_user():
+        return redirect(url_for("admin_users"))
+
+    users = load_users()
+    if username in users:
+        users.pop(username, None)
+        save_users(users)
+
+        df = data_file_for(username)
+        try:
+            if os.path.exists(df):
+                os.remove(df)
+        except Exception:
+            pass
+
+    return redirect(url_for("admin_users"))
 
 
 if __name__ == "__main__":
+    ensure_admin()
     port = int(os.environ.get("PORT", "5000"))
     app.run(host="0.0.0.0", port=port)
