@@ -8,7 +8,7 @@
   {"ing":"dog","tr":"köpek","level":"A1","d":0,"y":0},
   {"ing":"cat","tr":"kedi","level":"A1","d":0,"y":0},
   {"ing":"book","tr":"kitap","level":"A1","d":0,"y":0},
-  {"ing":"pen","tr":"kalem","level":"A1","d":0,"y":0},
+  {"ing":"pen","tr":"kalem","level":"A1","d":0,"y":1},
 
   {"ing":"table","tr":"masa","level":"A1","d":0,"y":0},
   {"ing":"chair","tr":"sandalye","level":"A1","d":0,"y":0},
