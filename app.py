@@ -425,17 +425,22 @@ def stats():
         """
 
     # butonlar (ALL dahil)
-    level_buttons = """
-      <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-        <a class="btn secondary" href="/stats?level=ALL">ALL</a>
-        <a class="btn secondary" href="/stats?level=A1">A1</a>
-        <a class="btn secondary" href="/stats?level=A2">A2</a>
-        <a class="btn secondary" href="/stats?level=B1">B1</a>
-        <a class="btn secondary" href="/stats?level=B2">B2</a>
-        <a class="btn secondary" href="/stats?level=C1">C1</a>
-        <a class="btn secondary" href="/stats?level=C2">C2</a>
-      </div>
-    """
+   def lvl_btn(lvl):
+    cls = "btn active" if level == lvl else "btn secondary"
+    return f'<a class="{cls}" href="/stats?level={lvl}">{lvl}</a>'
+
+level_buttons = f"""
+<div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+  <a class="{'btn active' if level=='ALL' else 'btn secondary'}" href="/stats?level=ALL">ALL</a>
+  {lvl_btn('A1')}
+  {lvl_btn('A2')}
+  {lvl_btn('B1')}
+  {lvl_btn('B2')}
+  {lvl_btn('C1')}
+  {lvl_btn('C2')}
+</div>
+"""
+
 
     return f"""
 <!doctype html>
@@ -488,6 +493,15 @@ def stats():
       color:var(--text);
       border:1px solid var(--line);
     }}
+
+/* AKTİF SEVİYE BUTONU */
+.btn.active{
+  background: linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
+  color:#07111f;
+  box-shadow: 0 10px 20px rgba(110,231,255,.18);
+  border:none;
+}
+
 
     .card{{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
