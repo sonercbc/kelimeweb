@@ -234,14 +234,17 @@ HTML = """
           <h1 class="question">{{question}}</h1>
 
           <form method="post">
-            <div class="row" style="width:100%">
-              <div style="flex:1; min-width:220px">
-                <input name="answer" autofocus placeholder="Cevabını yaz..." />
-                <input type="hidden" name="ing" value="{{word.ing}}">
-              </div>
-              <button class="btn" type="submit">Kontrol</button>
-            </div>
-          </form>
+  <div class="row" style="width:100%">
+    <div style="flex:1; min-width:220px">
+      <input name="answer" autofocus placeholder="Cevabını yaz..." />
+      <input type="hidden" name="ing" value="{{word.ing}}">
+      <input type="hidden" name="direction" value="{{direction}}">
+      <input type="hidden" name="correct_answer" value="{{correct_answer}}">
+    </div>
+    <button class="btn" type="submit">Kontrol</button>
+  </div>
+</form>
+
 
           {% if wrong %}
           <div class="alert">
@@ -290,42 +293,49 @@ HTML = """
 def index():
     words = load_words()
     last = None
+
     wrong = False
-    show_correct = ""
-    
+    show_correct = ""  # ekranda gösterilecek doğru cevap (yanlışsa)
+
+    def norm(s: str) -> str:
+        # Türkçe karakterler için daha sağlam
+        return (s or "").strip().casefold()
+
     if request.method == "POST":
         ing = request.form.get("ing", "")
-        user_answer = request.form.get("answer", "").strip().lower()
+        user_answer = norm(request.form.get("answer", ""))
 
         direction = request.form.get("direction", "")
-        correct_answer = request.form.get("correct_answer", "").strip().lower()
+        correct_answer_raw = request.form.get("correct_answer", "")  # ekranda gösterilecek ham hali
+        correct_answer = norm(correct_answer_raw)
 
-        # ilgili kelimeyi bul
+        # kelimeyi bul
         w = next((x for x in words if x["ing"] == ing), None)
+
         if w:
-            # sadece o soru yönünün cevabı doğru kabul edilir
             if user_answer == correct_answer:
                 w["d"] += 1
             else:
                 w["y"] += 1
                 wrong = True
-                show_correct = correct_answer
+                show_correct = correct_answer_raw  # HAM doğruyu göster
 
             save_words(words)
             last = ing
 
     # yeni soru seç
-    word, direction, question, correct_answer = pick_word(words, last)
+    word, direction, question, correct_answer_raw = pick_word(words, last)
 
     return render_template_string(
         HTML,
         question=question,
         word=type("obj", (object,), word),
         wrong=wrong,
-        correct=show_correct,          # yanlışsa ekranda gösterilecek
-        direction=direction,           # hidden input
-        correct_answer=correct_answer  # hidden input
+        correct=show_correct,               # yanlışsa ekranda göstereceğiz
+        direction=direction,                # hidden input
+        correct_answer=correct_answer_raw    # hidden input
     )
+
 
 @app.route("/add", methods=["POST"])
 def add():
