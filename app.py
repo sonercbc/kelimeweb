@@ -330,14 +330,90 @@ def add():
 
 @app.route("/stats")
 def stats():
-    words = load_words()
-    html = "<h2>İstatistik</h2><ul>"
-    for w in words:
-        total = w["d"] + w["y"]
-        pct = int((w["d"] / total) * 100) if total else 0
-        html += f"<li>{w['ing']} = {w['tr']} | {w['d']}D {w['y']}Y %{pct}</li>"
-    html += "</ul><a href='/'>Geri</a>"
-    return html
+    rows = ""
+for w in words:
+    total = w["d"] + w["y"]
+    pct = int((w["d"] / total) * 100) if total else 0
+    rows += f"""
+    <tr>
+        <td>{w['ing']}</td>
+        <td>{w['tr']}</td>
+        <td>{w['d']}</td>
+        <td>{w['y']}</td>
+        <td>%{pct}</td>
+    </tr>
+    """
+
+return f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>İstatistik</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }}
+        .container {{
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }}
+        h2 {{
+            text-align: center;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+        }}
+        th, td {{
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }}
+        th {{
+            background: #4CAF50;
+            color: white;
+        }}
+        a {{
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📊 Kelime İstatistikleri</h2>
+
+    <table>
+        <tr>
+            <th>İngilizce</th>
+            <th>Türkçe</th>
+            <th>Doğru</th>
+            <th>Yanlış</th>
+            <th>Başarı</th>
+        </tr>
+        {rows}
+    </table>
+
+    <a href="/">⬅ Ana sayfaya dön</a>
+</div>
+
+</body>
+</html>
+"""
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "5000"))
