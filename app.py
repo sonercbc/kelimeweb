@@ -1,24 +1,72 @@
 from __future__ import annotations
+
 import json, os, random
-from flask import Flask, request, redirect, url_for, render_template_string
+from functools import wraps
+
+from flask import Flask, request, redirect, url_for, render_template_string, session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-DATA_FILE = "kelimeler.json"
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 
+USERS_FILE = "users.json"
+
+
+# ----------------- USER HELPERS -----------------
+def load_users():
+    if not os.path.exists(USERS_FILE):
+        save_users({})
+        return {}
+    with open(USERS_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def save_users(users):
+    with open(USERS_FILE, "w", encoding="utf-8") as f:
+        json.dump(users, f, ensure_ascii=False, indent=2)
+
+def current_user():
+    return session.get("user")
+
+def data_file_for(username: str):
+    return f"kelimeler_{username}.json"
+
+
+# ----------------- LOGIN GUARD -----------------
+def login_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        if not current_user():
+            return redirect(url_for("login"))
+        return fn(*args, **kwargs)
+    return wrapper
+
+
+# ----------------- WORD HELPERS (per user) -----------------
 def load_words():
-    if not os.path.exists(DATA_FILE):
-        words = [
-    {"ing": "apple", "tr": "elma", "level": "A1", "d": 0, "y": 0},
-    {"ing": "book", "tr": "kitap", "level": "A1", "d": 0, "y": 0},
-]
+    username = current_user()
+    if not username:
+        return []
 
+    data_file = data_file_for(username)
+
+    if not os.path.exists(data_file):
+        # yeni kullanıcıya başlangıç kelimeleri
+        words = [
+            {"ing": "apple", "tr": "elma", "level": "A1", "d": 0, "y": 0},
+            {"ing": "book", "tr": "kitap", "level": "A1", "d": 0, "y": 0},
+        ]
         save_words(words)
         return words
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
+
+    with open(data_file, "r", encoding="utf-8") as f:
         return json.load(f)
 
 def save_words(words):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
+    username = current_user()
+    if not username:
+        return
+    data_file = data_file_for(username)
+    with open(data_file, "w", encoding="utf-8") as f:
         json.dump(words, f, ensure_ascii=False, indent=2)
 
 def pick_word(words, last=None):
@@ -29,6 +77,41 @@ def pick_word(words, last=None):
     question = f"{word['ing']} → Türkçe?" if direction == "EN_TR" else f"{word['tr']} → İngilizce?"
     return word, direction, question, answer
 
+
+# ----------------- AUTH HTML -----------------
+LOGIN_HTML = """
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Giriş</title>
+<style>
+body{font-family:system-ui;background:#0b1220;color:#eaf0ff;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px}
+.card{width:min(420px,100%);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px}
+input{width:100%;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.2);color:#eaf0ff;margin-top:10px}
+button{width:100%;padding:12px 14px;border-radius:14px;border:none;margin-top:12px;font-weight:700;background:linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));color:#07111f}
+a{color:#6ee7ff;text-decoration:none;font-weight:700}
+.err{margin-top:10px;color:#ffd2d2}
+</style></head><body>
+<div class="card">
+  <h2 style="margin:0 0 6px">Giriş</h2>
+  <div style="color:#93a4c7;font-size:13px;margin-bottom:10px">Kelime Quiz hesabınla giriş yap</div>
+  <form method="post">
+    <input name="username" placeholder="Kullanıcı adı" required>
+    <input name="password" type="password" placeholder="Şifre" required>
+    <button type="submit">Giriş</button>
+  </form>
+  {% if error %}<div class="err">{{error}}</div>{% endif %}
+  <div style="margin-top:12px;color:#93a4c7;font-size:13px">Hesabın yok mu? <a href="/register">Kayıt ol</a></div>
+</div>
+</body></html>
+"""
+
+REGISTER_HTML = LOGIN_HTML.replace("Giriş", "Kayıt Ol")\
+    .replace("Kelime Quiz hesabınla giriş yap", "Yeni hesap oluştur")\
+    .replace("Giriş</button>", "Kayıt Ol</button>")\
+    .replace('Hesabın yok mu? <a href="/register">Kayıt ol</a>', 'Hesabın var mı? <a href="/login">Giriş</a>')
+
+
+# ----------------- QUIZ HTML -----------------
 HTML = """
 <!doctype html>
 <html lang="tr">
@@ -71,6 +154,7 @@ HTML = """
       justify-content:space-between;
       gap:12px;
       margin-bottom:14px;
+      flex-wrap:wrap;
     }
     .brand{
       display:flex; align-items:center; gap:10px;
@@ -139,6 +223,8 @@ HTML = """
       box-shadow: 0 10px 20px rgba(110,231,255,.12);
       transition: transform .08s ease, filter .12s ease;
       white-space:nowrap;
+      display:inline-block;
+      text-decoration:none;
     }
     .btn:active{transform: translateY(1px)}
     .btn.secondary{
@@ -146,6 +232,13 @@ HTML = """
       color:var(--text);
       border:1px solid var(--line);
       box-shadow:none;
+    }
+    /* AKTİF SEVİYE BUTONU */
+    .btn.active{
+      background: linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
+      color:#07111f;
+      box-shadow: 0 10px 20px rgba(110,231,255,.18);
+      border:none;
     }
     .hint{
       margin-top:12px;
@@ -215,15 +308,6 @@ HTML = """
       font-weight:700;
       font-size:12px;
     }
-    
-    /* AKTİF SEVİYE BUTONU */
-.btn.active{
-  background: linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
-  color:#07111f;
-  box-shadow: 0 10px 20px rgba(110,231,255,.18);
-  border:none;
-}
-
   </style>
 </head>
 <body>
@@ -231,50 +315,47 @@ HTML = """
     <header>
       <div>
         <div class="brand"><div class="logo"></div>Kelime Quiz</div>
-        <div class="sub">Hızlı tekrar • yanlışta doğruyu gösterir • kayıtlar arkada saklanır</div>
+        <div class="sub">Hızlı tekrar • yanlışta doğruyu gösterir • kayıtlar kullanıcıya göre saklanır</div>
+        <div class="sub">Kullanıcı: <b>{{user}}</b> • <a class="link" href="/logout">Çıkış</a></div>
       </div>
-      <a class="link" href="/stats?level={{level}}">İstatistik →</a>
 
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+        <a class="link" href="/stats?level={{level}}">İstatistik →</a>
 
-<div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-  <a class="btn {{ 'active' if level=='A1' else 'secondary' }}" href="/?level=A1">A1</a>
-  <a class="btn {{ 'active' if level=='A2' else 'secondary' }}" href="/?level=A2">A2</a>
-  <a class="btn {{ 'active' if level=='B1' else 'secondary' }}" href="/?level=B1">B1</a>
-  <a class="btn {{ 'active' if level=='B2' else 'secondary' }}" href="/?level=B2">B2</a>
-  <a class="btn {{ 'active' if level=='C1' else 'secondary' }}" href="/?level=C1">C1</a>
-  <a class="btn {{ 'active' if level=='C2' else 'secondary' }}" href="/?level=C2">C2</a>
-</div>
-
-
-
+        <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+          <a class="btn {{ 'active' if level=='A1' else 'secondary' }}" href="/?level=A1">A1</a>
+          <a class="btn {{ 'active' if level=='A2' else 'secondary' }}" href="/?level=A2">A2</a>
+          <a class="btn {{ 'active' if level=='B1' else 'secondary' }}" href="/?level=B1">B1</a>
+          <a class="btn {{ 'active' if level=='B2' else 'secondary' }}" href="/?level=B2">B2</a>
+          <a class="btn {{ 'active' if level=='C1' else 'secondary' }}" href="/?level=C1">C1</a>
+          <a class="btn {{ 'active' if level=='C2' else 'secondary' }}" href="/?level=C2">C2</a>
+        </div>
+      </div>
     </header>
 
     <div class="card">
       <div class="grid">
-        <!-- SOL: SORU -->
         <div class="panel">
           <p class="qtitle">Soru</p>
           <h1 class="question">{{question}}</h1>
 
           <form method="post" action="/?level={{level}}">
+            <div class="row" style="width:100%">
+              <div style="flex:1; min-width:220px">
+                <input name="answer" autofocus placeholder="Cevabını yaz..." />
+                <input type="hidden" name="ing" value="{{word.ing}}">
+                <input type="hidden" name="direction" value="{{direction}}">
+                <input type="hidden" name="correct_answer" value="{{correct_answer}}">
+              </div>
+              <button class="btn" type="submit">Kontrol</button>
+            </div>
+          </form>
 
-  <div class="row" style="width:100%">
-    <div style="flex:1; min-width:220px">
-      <input name="answer" autofocus placeholder="Cevabını yaz..." />
-      <input type="hidden" name="ing" value="{{word.ing}}">
-      <input type="hidden" name="direction" value="{{direction}}">
-      <input type="hidden" name="correct_answer" value="{{correct_answer}}">
-    </div>
-    <button class="btn" type="submit">Kontrol</button>
-  </div>
-</form>
-
-{% if right %}
-<div class="alert" style="border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.10); color:#c9fddc;">
-  <div>Doğru ✅</div>
-</div>
-{% endif %}
-
+          {% if right %}
+          <div class="alert" style="border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.10); color:#c9fddc;">
+            <div>Doğru ✅</div>
+          </div>
+          {% endif %}
 
           {% if wrong %}
           <div class="alert">
@@ -293,15 +374,13 @@ HTML = """
           </div>
         </div>
 
-        <!-- SAĞ: YENİ KELİME -->
         <div class="panel">
           <div class="sectionTitle">
             <h3>Yeni kelime ekle</h3>
           </div>
 
           <form action="/add" method="post">
-<input type="hidden" name="level" value="{{level}}">
-
+            <input type="hidden" name="level" value="{{level}}">
             <div class="formGrid">
               <input name="ing" placeholder="İngilizce (örn: moon)" />
               <input name="tr" placeholder="Türkçe (örn: ay)" />
@@ -310,7 +389,7 @@ HTML = """
           </form>
 
           <div class="hint" style="margin-top:14px">
-            Eklediğin kelimeler otomatik kaydolur. İstatistik ekranında doğru/yanlış sayılarını görürsün.
+            Eklediğin kelimeler kullanıcıya özel kaydolur. İstatistik ekranında doğru/yanlış sayılarını görürsün.
           </div>
         </div>
       </div>
@@ -321,20 +400,62 @@ HTML = """
 """
 
 
+# ----------------- ROUTES -----------------
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        username = request.form.get("username", "").strip().lower()
+        password = request.form.get("password", "")
+
+        users = load_users()
+        user = users.get(username)
+        if not user or not check_password_hash(user["pw"], password):
+            error = "Kullanıcı adı veya şifre yanlış."
+        else:
+            session["user"] = username
+            return redirect(url_for("index"))
+    return render_template_string(LOGIN_HTML, error=error)
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    error = None
+    if request.method == "POST":
+        username = request.form.get("username", "").strip().lower()
+        password = request.form.get("password", "")
+
+        if len(username) < 3:
+            error = "Kullanıcı adı en az 3 karakter olsun."
+        elif len(password) < 4:
+            error = "Şifre en az 4 karakter olsun."
+        else:
+            users = load_users()
+            if username in users:
+                error = "Bu kullanıcı adı zaten var."
+            else:
+                users[username] = {"pw": generate_password_hash(password)}
+                save_users(users)
+                session["user"] = username
+                return redirect(url_for("index"))
+    return render_template_string(REGISTER_HTML, error=error)
+
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("login"))
+
+
 @app.route("/", methods=["GET", "POST"])
+@login_required
 def index():
-    # seviye seçimi
     level = request.args.get("level", "A1").upper()
     if level not in ["A1", "A2", "B1", "B2", "C1", "C2"]:
         level = "A1"
 
-    # tüm kelimeler (kaydetme işlemi bunun üstünden yapılacak)
     all_words = load_words()
-
-    # seçili seviyedeki kelimeler (soru bunun içinden seçilecek)
     level_words = [w for w in all_words if w.get("level", "A1").upper() == level]
     if not level_words:
-        level_words = all_words  # o seviyede hiç kelime yoksa fallback
+        level_words = all_words
 
     last = None
     wrong = False
@@ -351,7 +472,6 @@ def index():
         correct_answer_raw = request.form.get("correct_answer", "")
         correct_answer = norm(correct_answer_raw)
 
-        # DİKKAT: kelimeyi tüm listeden buluyoruz ki JSON bozulmasın
         w = next((x for x in all_words if x.get("ing") == ing), None)
 
         if w:
@@ -366,7 +486,6 @@ def index():
             save_words(all_words)
             last = ing
 
-    # yeni soru seç (seçili seviyeden)
     word, direction, question, correct_answer_raw = pick_word(level_words, last)
 
     return render_template_string(
@@ -378,13 +497,12 @@ def index():
         correct=show_correct,
         direction=direction,
         correct_answer=correct_answer_raw,
-        level=level
+        level=level,
+        user=current_user()
     )
 
-
-
-
 @app.route("/add", methods=["POST"])
+@login_required
 def add():
     all_words = load_words()
 
@@ -401,10 +519,9 @@ def add():
 
     return redirect(url_for("index", level=level))
 
-
 @app.route("/stats")
+@login_required
 def stats():
-    # seviye seçimi
     level = request.args.get("level", "ALL").upper()
     valid_levels = ["A1", "A2", "B1", "B2", "C1", "C2", "ALL"]
     if level not in valid_levels:
@@ -412,13 +529,11 @@ def stats():
 
     words = load_words()
 
-    # filtre
     if level == "ALL":
         filtered = words
     else:
         filtered = [w for w in words if w.get("level", "A1").upper() == level]
 
-    # tablo satırları
     rows = ""
     for w in filtered:
         d = int(w.get("d", 0))
@@ -437,7 +552,6 @@ def stats():
         </tr>
         """
 
-    # butonlar (aktif olan farklı class)
     def btn(lvl, text=None):
         text = text or lvl
         cls = "btn active" if level == lvl else "btn secondary"
@@ -496,6 +610,7 @@ def stats():
       font-weight:700;
       white-space:nowrap;
       display:inline-block;
+      text-decoration:none;
     }}
     .btn.secondary{{
       background: rgba(255,255,255,.08);
@@ -536,7 +651,7 @@ def stats():
     <header>
       <div>
         <div class="brand"><div class="logo"></div>İstatistik</div>
-        <div class="sub">Seçili seviye: <b>{level}</b> • Doğru/yanlış ve başarı yüzdesi</div>
+        <div class="sub">Kullanıcı: <b>{current_user()}</b> • Seçili seviye: <b>{level}</b></div>
       </div>
 
       <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
@@ -575,8 +690,6 @@ def stats():
 """
 
 
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "5000"))
     app.run(host="0.0.0.0", port=port)
-
