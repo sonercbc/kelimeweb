@@ -330,89 +330,120 @@ def add():
 
 @app.route("/stats")
 def stats():
-    rows = ""
-for w in words:
-    total = w["d"] + w["y"]
-    pct = int((w["d"] / total) * 100) if total else 0
-    rows += f"""
-    <tr>
-        <td>{w['ing']}</td>
-        <td>{w['tr']}</td>
-        <td>{w['d']}</td>
-        <td>{w['y']}</td>
-        <td>%{pct}</td>
-    </tr>
-    """
+    words = load_words()
 
-return f"""
-<!DOCTYPE html>
-<html>
+    rows = ""
+    for w in words:
+        total = w["d"] + w["y"]
+        pct = int((w["d"] / total) * 100) if total else 0
+
+        rows += f"""
+        <tr>
+            <td><b>{w['ing']}</b></td>
+            <td>{w['tr']}</td>
+            <td>{w['d']}</td>
+            <td>{w['y']}</td>
+            <td>%{pct}</td>
+        </tr>
+        """
+
+    return f"""
+<!doctype html>
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>İstatistik</title>
-    <style>
-        body {{
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }}
-        .container {{
-            max-width: 800px;
-            margin: 40px auto;
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }}
-        h2 {{
-            text-align: center;
-        }}
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-        }}
-        th, td {{
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }}
-        th {{
-            background: #4CAF50;
-            color: white;
-        }}
-        a {{
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #4CAF50;
-            font-weight: bold;
-        }}
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>İstatistik • Kelime Quiz</title>
+  <style>
+    :root{{
+      --bg:#0b1220; --muted:#93a4c7; --text:#eaf0ff;
+      --accent:#6ee7ff; --accent2:#a78bfa;
+      --line:rgba(255,255,255,.08); --shadow:0 12px 30px rgba(0,0,0,.35);
+      --radius:18px;
+    }}
+    *{{box-sizing:border-box}}
+    body{{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(900px 500px at 10% 0%, rgba(110,231,255,.14), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(167,139,250,.14), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      padding:24px;
+    }}
+    .wrap{{width:min(980px,100%)}}
+    header{{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;}}
+    .brand{{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px;}}
+    .logo{{width:38px; height:38px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(110,231,255,.9), rgba(167,139,250,.9));
+      box-shadow: var(--shadow);
+    }}
+    .sub{{color:var(--muted); font-size:13px}}
+    a.link{{color:var(--accent); text-decoration:none; font-weight:700}}
+    a.link:hover{{text-decoration:underline}}
+    .card{{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }}
+    .top{{padding:16px 18px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px}}
+    .pill{{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border:1px solid var(--line); border-radius:999px;
+      color:var(--muted); font-size:13px; background: rgba(0,0,0,.18);
+    }}
+    .tableWrap{{padding:14px 16px 18px}}
+    table{{width:100%; border-collapse:separate; border-spacing:0 10px}}
+    th{{text-align:left; color:var(--muted); font-size:12px; font-weight:700; padding:0 12px 6px}}
+    td{{background: rgba(0,0,0,.18); border:1px solid var(--line); padding:12px; font-size:14px}}
+    tr td:first-child{{border-radius:14px 0 0 14px}}
+    tr td:last-child{{border-radius:0 14px 14px 0}}
+    @media (max-width:720px){{ th:nth-child(2), td:nth-child(2){{display:none}} }}
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="brand"><div class="logo"></div>İstatistik</div>
+        <div class="sub">Her kelime için doğru/yanlış ve başarı yüzdesi</div>
+      </div>
+      <a class="link" href="/">← Quiz’e dön</a>
+    </header>
 
-<div class="container">
-    <h2>📊 Kelime İstatistikleri</h2>
+    <div class="card">
+      <div class="top">
+        <div class="pill">Toplam kelime: <b style="color:var(--text)">{len(words)}</b></div>
+        <div class="pill">İpucu: düşük yüzdeli kelimeleri tekrar et</div>
+      </div>
 
-    <table>
-        <tr>
-            <th>İngilizce</th>
-            <th>Türkçe</th>
-            <th>Doğru</th>
-            <th>Yanlış</th>
-            <th>Başarı</th>
-        </tr>
-        {rows}
-    </table>
-
-    <a href="/">⬅ Ana sayfaya dön</a>
-</div>
-
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>İngilizce</th>
+              <th>Türkçe</th>
+              <th>Doğru</th>
+              <th>Yanlış</th>
+              <th>Başarı</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
 """
+
 
 
 if __name__ == "__main__":
