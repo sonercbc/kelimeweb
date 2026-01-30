@@ -88,7 +88,10 @@ def get_current_user_id():
 # ----------------- WORD HELPERS (SQLite) -----------------
 def ensure_seed_words_for_user(user_id: int):
     db = get_db()
-    cnt = db.execute("SELECT COUNT(*) AS c FROM words WHERE user_id = ?", (user_id,)).fetchone()["c"]
+    cnt = db.execute(
+        "SELECT COUNT(*) AS c FROM words WHERE user_id = ?",
+        (user_id,)
+    ).fetchone()["c"]
     if cnt != 0:
         return
 
@@ -105,6 +108,7 @@ def ensure_seed_words_for_user(user_id: int):
         ("cat", "kedi", "A1", 0, 0, now),
         ("book", "kitap", "A1", 0, 0, now),
         ("pen", "kalem", "A1", 0, 1, now),
+
         ("table", "masa", "A1", 0, 0, now),
         ("chair", "sandalye", "A1", 0, 0, now),
         ("door", "kapı", "A1", 0, 0, now),
@@ -115,6 +119,7 @@ def ensure_seed_words_for_user(user_id: int):
         ("student", "öğrenci", "A1", 0, 0, now),
         ("friend", "arkadaş", "A1", 0, 0, now),
         ("family", "aile", "A1", 0, 0, now),
+
         ("mother", "anne", "A1", 0, 0, now),
         ("father", "baba", "A1", 0, 0, now),
         ("brother", "erkek kardeş", "A1", 0, 0, now),
@@ -125,6 +130,7 @@ def ensure_seed_words_for_user(user_id: int):
         ("street", "sokak", "A1", 0, 0, now),
         ("shop", "mağaza", "A1", 0, 0, now),
         ("money", "para", "A1", 0, 0, now),
+
         ("time", "zaman", "A1", 0, 0, now),
         ("day", "gün", "A1", 0, 0, now),
         ("night", "gece", "A1", 0, 0, now),
@@ -136,7 +142,7 @@ def ensure_seed_words_for_user(user_id: int):
         ("new", "yeni", "A1", 0, 0, now),
         ("old", "eski", "A1", 0, 0, now),
 
-        # A2 (problem TEK!)
+        # A2 (problem tek)
         ("answer", "cevap", "A2", 0, 0, now),
         ("question", "soru", "A2", 0, 0, now),
         ("idea", "fikir", "A2", 0, 0, now),
@@ -354,8 +360,7 @@ def ensure_seed_words_for_user(user_id: int):
     ("unwarranted", "yersiz", "C2", 0, 0, now),
     ("vindicate", "aklamak / haklı çıkarmak", "C2", 0, 0, now),
             
-        ]
-        db.executemany(
+       db.executemany(
         "INSERT OR IGNORE INTO words (user_id, ing, tr, level, d, y, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [(user_id, ing, tr, lvl, d, y, created_at) for (ing, tr, lvl, d, y, created_at) in seed],
     )
