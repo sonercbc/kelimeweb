@@ -224,7 +224,8 @@ HTML = """
         <div class="brand"><div class="logo"></div>Kelime Quiz</div>
         <div class="sub">Hızlı tekrar • yanlışta doğruyu gösterir • kayıtlar arkada saklanır</div>
       </div>
-      <a class="link" href="/stats">İstatistik →</a>
+      <a class="link" href="/stats?level={{level}}">İstatistik →</a>
+
 
 <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
   <a class="btn secondary" href="/?level=A1">A1</a>
@@ -393,22 +394,48 @@ def add():
 
 @app.route("/stats")
 def stats():
+    # seviye seçimi (querystring)
+    level = request.args.get("level", "ALL").upper()
+    valid_levels = ["A1", "A2", "B1", "B2", "C1", "C2", "ALL"]
+    if level not in valid_levels:
+        level = "ALL"
+
     words = load_words()
 
+    # filtre
+    if level != "ALL":
+        filtered = [w for w in words if w.get("level", "A1").upper() == level]
+    else:
+        filtered = words
+
     rows = ""
-    for w in words:
-        total = w["d"] + w["y"]
-        pct = int((w["d"] / total) * 100) if total else 0
+    for w in filtered:
+        total = int(w.get("d", 0)) + int(w.get("y", 0))
+        pct = int((int(w.get("d", 0)) / total) * 100) if total else 0
 
         rows += f"""
         <tr>
             <td><b>{w['ing']}</b></td>
             <td>{w['tr']}</td>
-            <td>{w['d']}</td>
-            <td>{w['y']}</td>
+            <td>{w.get('level','A1')}</td>
+            <td>{w.get('d',0)}</td>
+            <td>{w.get('y',0)}</td>
             <td>%{pct}</td>
         </tr>
         """
+
+    # butonlar (ALL dahil)
+    level_buttons = """
+      <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+        <a class="btn secondary" href="/stats?level=ALL">ALL</a>
+        <a class="btn secondary" href="/stats?level=A1">A1</a>
+        <a class="btn secondary" href="/stats?level=A2">A2</a>
+        <a class="btn secondary" href="/stats?level=B1">B1</a>
+        <a class="btn secondary" href="/stats?level=B2">B2</a>
+        <a class="btn secondary" href="/stats?level=C1">C1</a>
+        <a class="btn secondary" href="/stats?level=C2">C2</a>
+      </div>
+    """
 
     return f"""
 <!doctype html>
@@ -438,7 +465,7 @@ def stats():
       padding:24px;
     }}
     .wrap{{width:min(980px,100%)}}
-    header{{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;}}
+    header{{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap;}}
     .brand{{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px;}}
     .logo{{width:38px; height:38px; border-radius:12px;
       background: linear-gradient(135deg, rgba(110,231,255,.9), rgba(167,139,250,.9));
@@ -447,6 +474,21 @@ def stats():
     .sub{{color:var(--muted); font-size:13px}}
     a.link{{color:var(--accent); text-decoration:none; font-weight:700}}
     a.link:hover{{text-decoration:underline}}
+
+    .btn{{
+      cursor:pointer;
+      border:none;
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:700;
+      white-space:nowrap;
+    }}
+    .btn.secondary{{
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      border:1px solid var(--line);
+    }}
+
     .card{{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border: 1px solid var(--line);
@@ -474,14 +516,18 @@ def stats():
     <header>
       <div>
         <div class="brand"><div class="logo"></div>İstatistik</div>
-        <div class="sub">Her kelime için doğru/yanlış ve başarı yüzdesi</div>
+        <div class="sub">Seçili seviye: <b>{level}</b> • Doğru/yanlış ve başarı yüzdesi</div>
       </div>
-      <a class="link" href="/">← Quiz’e dön</a>
+
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+        {level_buttons}
+        <a class="link" href="/">← Quiz’e dön</a>
+      </div>
     </header>
 
     <div class="card">
       <div class="top">
-        <div class="pill">Toplam kelime: <b style="color:var(--text)">{len(words)}</b></div>
+        <div class="pill">Gösterilen kelime: <b style="color:var(--text)">{len(filtered)}</b></div>
         <div class="pill">İpucu: düşük yüzdeli kelimeleri tekrar et</div>
       </div>
 
@@ -491,6 +537,7 @@ def stats():
             <tr>
               <th>İngilizce</th>
               <th>Türkçe</th>
+              <th>Seviye</th>
               <th>Doğru</th>
               <th>Yanlış</th>
               <th>Başarı</th>
@@ -506,6 +553,7 @@ def stats():
 </body>
 </html>
 """
+
 
 
 
