@@ -8,9 +8,10 @@ DATA_FILE = "kelimeler.json"
 def load_words():
     if not os.path.exists(DATA_FILE):
         words = [
-            {"ing": "apple", "tr": "elma", "d": 0, "y": 0},
-            {"ing": "book", "tr": "kitap", "d": 0, "y": 0},
-        ]
+    {"ing": "apple", "tr": "elma", "level": "A1", "d": 0, "y": 0},
+    {"ing": "book", "tr": "kitap", "level": "A1", "d": 0, "y": 0},
+]
+
         save_words(words)
         return words
     with open(DATA_FILE, "r", encoding="utf-8") as f:
@@ -224,6 +225,17 @@ HTML = """
         <div class="sub">Hızlı tekrar • yanlışta doğruyu gösterir • kayıtlar arkada saklanır</div>
       </div>
       <a class="link" href="/stats">İstatistik →</a>
+
+<div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+  <a class="btn secondary" href="/?level=A1">A1</a>
+  <a class="btn secondary" href="/?level=A2">A2</a>
+  <a class="btn secondary" href="/?level=B1">B1</a>
+  <a class="btn secondary" href="/?level=B2">B2</a>
+  <a class="btn secondary" href="/?level=C1">C1</a>
+  <a class="btn secondary" href="/?level=C2">C2</a>
+</div>
+
+
     </header>
 
     <div class="card">
@@ -233,7 +245,8 @@ HTML = """
           <p class="qtitle">Soru</p>
           <h1 class="question">{{question}}</h1>
 
-          <form method="post">
+          <form method="post" action="/?level={{level}}">
+
   <div class="row" style="width:100%">
     <div style="flex:1; min-width:220px">
       <input name="answer" autofocus placeholder="Cevabını yaz..." />
@@ -276,6 +289,8 @@ HTML = """
           </div>
 
           <form action="/add" method="post">
+<input type="hidden" name="level" value="{{level}}">
+
             <div class="formGrid">
               <input name="ing" placeholder="İngilizce (örn: moon)" />
               <input name="tr" placeholder="Türkçe (örn: ay)" />
@@ -297,9 +312,20 @@ HTML = """
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    words = load_words()
-    last = None
+    # seviye seçimi
+    level = request.args.get("level", "A1").upper()
+    if level not in ["A1", "A2", "B1", "B2", "C1", "C2"]:
+        level = "A1"
 
+    # tüm kelimeler (kaydetme işlemi bunun üstünden yapılacak)
+    all_words = load_words()
+
+    # seçili seviyedeki kelimeler (soru bunun içinden seçilecek)
+    level_words = [w for w in all_words if w.get("level", "A1").upper() == level]
+    if not level_words:
+        level_words = all_words  # o seviyede hiç kelime yoksa fallback
+
+    last = None
     wrong = False
     right = False
     show_correct = ""
@@ -314,23 +340,23 @@ def index():
         correct_answer_raw = request.form.get("correct_answer", "")
         correct_answer = norm(correct_answer_raw)
 
-        # kelimeyi bul
-        w = next((x for x in words if x["ing"] == ing), None)
+        # DİKKAT: kelimeyi tüm listeden buluyoruz ki JSON bozulmasın
+        w = next((x for x in all_words if x.get("ing") == ing), None)
 
         if w:
             if user_answer == correct_answer:
-                w["d"] += 1
+                w["d"] = int(w.get("d", 0)) + 1
                 right = True
             else:
-                w["y"] += 1
+                w["y"] = int(w.get("y", 0)) + 1
                 wrong = True
                 show_correct = correct_answer_raw
 
-            save_words(words)
+            save_words(all_words)
             last = ing
 
-    # yeni soru seç
-    word, direction, question, correct_answer_raw = pick_word(words, last)
+    # yeni soru seç (seçili seviyeden)
+    word, direction, question, correct_answer_raw = pick_word(level_words, last)
 
     return render_template_string(
         HTML,
@@ -340,19 +366,30 @@ def index():
         right=right,
         correct=show_correct,
         direction=direction,
-        correct_answer=correct_answer_raw
+        correct_answer=correct_answer_raw,
+        level=level
     )
+
+
 
 
 @app.route("/add", methods=["POST"])
 def add():
-    words = load_words()
-    ing = request.form["ing"].strip().lower()
-    tr = request.form["tr"].strip().lower()
+    all_words = load_words()
+
+    ing = request.form.get("ing", "").strip().lower()
+    tr = request.form.get("tr", "").strip().lower()
+    level = request.form.get("level", "A1").upper()
+
+    if level not in ["A1", "A2", "B1", "B2", "C1", "C2"]:
+        level = "A1"
+
     if ing and tr:
-        words.append({"ing": ing, "tr": tr, "d": 0, "y": 0})
-        save_words(words)
-    return redirect(url_for("index"))
+        all_words.append({"ing": ing, "tr": tr, "level": level, "d": 0, "y": 0})
+        save_words(all_words)
+
+    return redirect(url_for("index", level=level))
+
 
 @app.route("/stats")
 def stats():
