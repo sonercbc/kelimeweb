@@ -245,6 +245,12 @@ HTML = """
   </div>
 </form>
 
+{% if right %}
+<div class="alert" style="border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.10); color:#c9fddc;">
+  <div>Doğru ✅</div>
+</div>
+{% endif %}
+
 
           {% if wrong %}
           <div class="alert">
@@ -295,6 +301,7 @@ def index():
     last = None
 
     wrong = False
+    right = False
     show_correct = ""  # ekranda gösterilecek doğru cevap (yanlışsa)
 
     def norm(s: str) -> str:
@@ -314,11 +321,12 @@ def index():
 
         if w:
             if user_answer == correct_answer:
-                w["d"] += 1
-            else:
-                w["y"] += 1
-                wrong = True
-                show_correct = correct_answer_raw  # HAM doğruyu göster
+    w["d"] += 1
+    right = True
+else:
+    w["y"] += 1
+    wrong = True
+    show_correct = correct_answer_raw  # HAM doğruyu göster
 
             save_words(words)
             last = ing
@@ -331,6 +339,7 @@ def index():
         question=question,
         word=type("obj", (object,), word),
         wrong=wrong,
+right=right,
         correct=show_correct,               # yanlışsa ekranda göstereceğiz
         direction=direction,                # hidden input
         correct_answer=correct_answer_raw    # hidden input
