@@ -215,6 +215,15 @@ HTML = """
       font-weight:700;
       font-size:12px;
     }
+    
+    /* AKTİF SEVİYE BUTONU */
+.btn.active{
+  background: linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
+  color:#07111f;
+  box-shadow: 0 10px 20px rgba(110,231,255,.18);
+  border:none;
+}
+
   </style>
 </head>
 <body>
@@ -228,13 +237,14 @@ HTML = """
 
 
 <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-  <a class="btn secondary" href="/?level=A1">A1</a>
-  <a class="btn secondary" href="/?level=A2">A2</a>
-  <a class="btn secondary" href="/?level=B1">B1</a>
-  <a class="btn secondary" href="/?level=B2">B2</a>
-  <a class="btn secondary" href="/?level=C1">C1</a>
-  <a class="btn secondary" href="/?level=C2">C2</a>
+  <a class="btn {{ 'active' if level=='A1' else 'secondary' }}" href="/?level=A1">A1</a>
+  <a class="btn {{ 'active' if level=='A2' else 'secondary' }}" href="/?level=A2">A2</a>
+  <a class="btn {{ 'active' if level=='B1' else 'secondary' }}" href="/?level=B1">B1</a>
+  <a class="btn {{ 'active' if level=='B2' else 'secondary' }}" href="/?level=B2">B2</a>
+  <a class="btn {{ 'active' if level=='C1' else 'secondary' }}" href="/?level=C1">C1</a>
+  <a class="btn {{ 'active' if level=='C2' else 'secondary' }}" href="/?level=C2">C2</a>
 </div>
+
 
 
     </header>
