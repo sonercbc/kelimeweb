@@ -302,18 +302,16 @@ def index():
 
     wrong = False
     right = False
-    show_correct = ""  # ekranda gösterilecek doğru cevap (yanlışsa)
+    show_correct = ""
 
     def norm(s: str) -> str:
-        # Türkçe karakterler için daha sağlam
         return (s or "").strip().casefold()
 
     if request.method == "POST":
         ing = request.form.get("ing", "")
         user_answer = norm(request.form.get("answer", ""))
 
-        direction = request.form.get("direction", "")
-        correct_answer_raw = request.form.get("correct_answer", "")  # ekranda gösterilecek ham hali
+        correct_answer_raw = request.form.get("correct_answer", "")
         correct_answer = norm(correct_answer_raw)
 
         # kelimeyi bul
@@ -321,12 +319,12 @@ def index():
 
         if w:
             if user_answer == correct_answer:
-    w["d"] += 1
-    right = True
-else:
-    w["y"] += 1
-    wrong = True
-    show_correct = correct_answer_raw  # HAM doğruyu göster
+                w["d"] += 1
+                right = True
+            else:
+                w["y"] += 1
+                wrong = True
+                show_correct = correct_answer_raw
 
             save_words(words)
             last = ing
@@ -339,10 +337,10 @@ else:
         question=question,
         word=type("obj", (object,), word),
         wrong=wrong,
-right=right,
-        correct=show_correct,               # yanlışsa ekranda göstereceğiz
-        direction=direction,                # hidden input
-        correct_answer=correct_answer_raw    # hidden input
+        right=right,
+        correct=show_correct,
+        direction=direction,
+        correct_answer=correct_answer_raw
     )
 
 
