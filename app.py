@@ -52,9 +52,302 @@ def load_words():
     if not os.path.exists(data_file):
         # yeni kullanıcıya başlangıç kelimeleri
         words = [
-            {"ing": "apple", "tr": "elma", "level": "A1", "d": 0, "y": 0},
-            {"ing": "book", "tr": "kitap", "level": "A1", "d": 0, "y": 0},
-        ]
+  {"ing":"apple","tr":"elma","level":"A1","d":0,"y":0},
+  {"ing":"water","tr":"su","level":"A1","d":0,"y":0},
+  {"ing":"bread","tr":"ekmek","level":"A1","d":0,"y":0},
+  {"ing":"milk","tr":"süt","level":"A1","d":0,"y":0},
+  {"ing":"house","tr":"ev","level":"A1","d":0,"y":0},
+  {"ing":"car","tr":"araba","level":"A1","d":0,"y":0},
+  {"ing":"dog","tr":"köpek","level":"A1","d":0,"y":0},
+  {"ing":"cat","tr":"kedi","level":"A1","d":0,"y":0},
+  {"ing":"book","tr":"kitap","level":"A1","d":0,"y":0},
+  {"ing":"pen","tr":"kalem","level":"A1","d":0,"y":1},
+
+  {"ing":"table","tr":"masa","level":"A1","d":0,"y":0},
+  {"ing":"chair","tr":"sandalye","level":"A1","d":0,"y":0},
+  {"ing":"door","tr":"kapı","level":"A1","d":0,"y":0},
+  {"ing":"window","tr":"pencere","level":"A1","d":0,"y":0},
+  {"ing":"phone","tr":"telefon","level":"A1","d":0,"y":0},
+  {"ing":"school","tr":"okul","level":"A1","d":0,"y":0},
+  {"ing":"teacher","tr":"öğretmen","level":"A1","d":0,"y":0},
+  {"ing":"student","tr":"öğrenci","level":"A1","d":0,"y":0},
+  {"ing":"friend","tr":"arkadaş","level":"A1","d":0,"y":0},
+  {"ing":"family","tr":"aile","level":"A1","d":0,"y":0},
+
+  {"ing":"mother","tr":"anne","level":"A1","d":0,"y":0},
+  {"ing":"father","tr":"baba","level":"A1","d":0,"y":0},
+  {"ing":"brother","tr":"erkek kardeş","level":"A1","d":0,"y":0},
+  {"ing":"sister","tr":"kız kardeş","level":"A1","d":0,"y":0},
+  {"ing":"food","tr":"yemek","level":"A1","d":0,"y":0},
+  {"ing":"drink","tr":"içecek","level":"A1","d":0,"y":0},
+  {"ing":"city","tr":"şehir","level":"A1","d":0,"y":0},
+  {"ing":"street","tr":"sokak","level":"A1","d":0,"y":0},
+  {"ing":"shop","tr":"mağaza","level":"A1","d":0,"y":0},
+  {"ing":"money","tr":"para","level":"A1","d":0,"y":0},
+
+  {"ing":"time","tr":"zaman","level":"A1","d":0,"y":0},
+  {"ing":"day","tr":"gün","level":"A1","d":0,"y":0},
+  {"ing":"night","tr":"gece","level":"A1","d":0,"y":0},
+  {"ing":"morning","tr":"sabah","level":"A1","d":0,"y":0},
+  {"ing":"good","tr":"iyi","level":"A1","d":0,"y":0},
+  {"ing":"bad","tr":"kötü","level":"A1","d":0,"y":0},
+  {"ing":"big","tr":"büyük","level":"A1","d":0,"y":0},
+  {"ing":"small","tr":"küçük","level":"A1","d":0,"y":0},
+  {"ing":"new","tr":"yeni","level":"A1","d":0,"y":0},
+  {"ing":"old","tr":"eski","level":"A1","d":0,"y":0},
+
+
+
+
+
+  
+{"ing":"answer","tr":"cevap","level":"A2","d":0,"y":0},
+  {"ing":"question","tr":"soru","level":"A2","d":0,"y":0},
+  {"ing":"problem","tr":"problem","level":"A2","d":0,"y":0},
+  {"ing":"idea","tr":"fikir","level":"A2","d":0,"y":0},
+  {"ing":"job","tr":"iş","level":"A2","d":0,"y":0},
+  {"ing":"work","tr":"çalışmak / iş","level":"A2","d":0,"y":0},
+  {"ing":"office","tr":"ofis","level":"A2","d":0,"y":0},
+  {"ing":"company","tr":"şirket","level":"A2","d":0,"y":0},
+  {"ing":"meeting","tr":"toplantı","level":"A2","d":0,"y":0},
+  {"ing":"plan","tr":"plan","level":"A2","d":0,"y":0},
+
+  {"ing":"travel","tr":"seyahat etmek","level":"A2","d":0,"y":0},
+  {"ing":"holiday","tr":"tatil","level":"A2","d":0,"y":0},
+  {"ing":"ticket","tr":"bilet","level":"A2","d":0,"y":0},
+  {"ing":"hotel","tr":"otel","level":"A2","d":0,"y":0},
+  {"ing":"airport","tr":"havaalanı","level":"A2","d":0,"y":0},
+  {"ing":"weather","tr":"hava durumu","level":"A2","d":0,"y":0},
+  {"ing":"season","tr":"mevsim","level":"A2","d":0,"y":0},
+  {"ing":"temperature","tr":"sıcaklık","level":"A2","d":0,"y":0},
+  {"ing":"rain","tr":"yağmur","level":"A2","d":0,"y":0},
+  {"ing":"snow","tr":"kar","level":"A2","d":0,"y":0},
+
+  {"ing":"health","tr":"sağlık","level":"A2","d":0,"y":0},
+  {"ing":"doctor","tr":"doktor","level":"A2","d":0,"y":0},
+  {"ing":"hospital","tr":"hastane","level":"A2","d":0,"y":0},
+  {"ing":"medicine","tr":"ilaç","level":"A2","d":0,"y":0},
+  {"ing":"problem","tr":"sorun","level":"A2","d":0,"y":0},
+  {"ing":"help","tr":"yardım etmek","level":"A2","d":0,"y":0},
+  {"ing":"learn","tr":"öğrenmek","level":"A2","d":0,"y":0},
+  {"ing":"teach","tr":"öğretmek","level":"A2","d":0,"y":0},
+  {"ing":"practice","tr":"pratik yapmak","level":"A2","d":0,"y":0},
+  {"ing":"remember","tr":"hatırlamak","level":"A2","d":0,"y":0},
+
+  {"ing":"buy","tr":"satın almak","level":"A2","d":0,"y":0},
+  {"ing":"sell","tr":"satmak","level":"A2","d":0,"y":0},
+  {"ing":"price","tr":"fiyat","level":"A2","d":0,"y":0},
+  {"ing":"cheap","tr":"ucuz","level":"A2","d":0,"y":0},
+  {"ing":"expensive","tr":"pahalı","level":"A2","d":0,"y":0},
+  {"ing":"choose","tr":"seçmek","level":"A2","d":0,"y":0},
+  {"ing":"decide","tr":"karar vermek","level":"A2","d":0,"y":0},
+  {"ing":"wait","tr":"beklemek","level":"A2","d":0,"y":0},
+  {"ing":"arrive","tr":"varmak","level":"A2","d":0,"y":0},
+  {"ing":"leave","tr":"ayrılmak","level":"A2","d":0,"y":0},
+
+
+
+
+
+
+  {"ing":"experience","tr":"deneyim","level":"B1","d":0,"y":0},
+  {"ing":"improve","tr":"geliştirmek","level":"B1","d":0,"y":0},
+  {"ing":"increase","tr":"artırmak","level":"B1","d":0,"y":0},
+  {"ing":"reduce","tr":"azaltmak","level":"B1","d":0,"y":0},
+  {"ing":"result","tr":"sonuç","level":"B1","d":0,"y":0},
+  {"ing":"reason","tr":"sebep","level":"B1","d":0,"y":0},
+  {"ing":"effect","tr":"etki","level":"B1","d":0,"y":0},
+  {"ing":"success","tr":"başarı","level":"B1","d":0,"y":0},
+  {"ing":"fail","tr":"başarısız olmak","level":"B1","d":0,"y":0},
+  {"ing":"goal","tr":"hedef","level":"B1","d":0,"y":0},
+
+  {"ing":"chance","tr":"şans / ihtimal","level":"B1","d":0,"y":0},
+  {"ing":"risk","tr":"risk","level":"B1","d":0,"y":0},
+  {"ing":"choice","tr":"seçim","level":"B1","d":0,"y":0},
+  {"ing":"decision","tr":"karar","level":"B1","d":0,"y":0},
+  {"ing":"opinion","tr":"fikir","level":"B1","d":0,"y":0},
+  {"ing":"agree","tr":"katılmak","level":"B1","d":0,"y":0},
+  {"ing":"disagree","tr":"katılmamak","level":"B1","d":0,"y":0},
+  {"ing":"explain","tr":"açıklamak","level":"B1","d":0,"y":0},
+  {"ing":"describe","tr":"tanımlamak","level":"B1","d":0,"y":0},
+  {"ing":"suggest","tr":"önermek","level":"B1","d":0,"y":0},
+
+  {"ing":"support","tr":"desteklemek","level":"B1","d":0,"y":0},
+  {"ing":"manage","tr":"yönetmek","level":"B1","d":0,"y":0},
+  {"ing":"control","tr":"kontrol etmek","level":"B1","d":0,"y":0},
+  {"ing":"organize","tr":"düzenlemek","level":"B1","d":0,"y":0},
+  {"ing":"prepare","tr":"hazırlamak","level":"B1","d":0,"y":0},
+  {"ing":"develop","tr":"geliştirmek","level":"B1","d":0,"y":0},
+  {"ing":"solve","tr":"çözmek","level":"B1","d":0,"y":0},
+  {"ing":"discover","tr":"keşfetmek","level":"B1","d":0,"y":0},
+  {"ing":"expect","tr":"ummak / beklemek","level":"B1","d":0,"y":0},
+  {"ing":"avoid","tr":"kaçınmak","level":"B1","d":0,"y":0},
+
+  {"ing":"compare","tr":"karşılaştırmak","level":"B1","d":0,"y":0},
+  {"ing":"depend","tr":"bağlı olmak","level":"B1","d":0,"y":0},
+  {"ing":"allow","tr":"izin vermek","level":"B1","d":0,"y":0},
+  {"ing":"refuse","tr":"reddetmek","level":"B1","d":0,"y":0},
+  {"ing":"protect","tr":"korumak","level":"B1","d":0,"y":0},
+  {"ing":"accept","tr":"kabul etmek","level":"B1","d":0,"y":0},
+  {"ing":"continue","tr":"devam etmek","level":"B1","d":0,"y":0},
+  {"ing":"quit","tr":"bırakmak","level":"B1","d":0,"y":0},
+  {"ing":"require","tr":"gerektirmek","level":"B1","d":0,"y":0},
+  {"ing":"achieve","tr":"başarmak","level":"B1","d":0,"y":0},
+
+
+
+
+
+
+  
+  {"ing":"analyze","tr":"analiz etmek","level":"B2","d":0,"y":0},
+  {"ing":"assume","tr":"varsaymak","level":"B2","d":0,"y":0},
+  {"ing":"estimate","tr":"tahmin etmek","level":"B2","d":0,"y":0},
+  {"ing":"evaluate","tr":"değerlendirmek","level":"B2","d":0,"y":0},
+  {"ing":"interpret","tr":"yorumlamak","level":"B2","d":0,"y":0},
+  {"ing":"conclude","tr":"sonuca varmak","level":"B2","d":0,"y":0},
+  {"ing":"predict","tr":"öngörmek","level":"B2","d":0,"y":0},
+  {"ing":"determine","tr":"belirlemek","level":"B2","d":0,"y":0},
+  {"ing":"identify","tr":"tanımlamak / belirlemek","level":"B2","d":0,"y":0},
+  {"ing":"recognize","tr":"fark etmek / tanımak","level":"B2","d":0,"y":0},
+
+  {"ing":"approach","tr":"yaklaşım","level":"B2","d":0,"y":0},
+  {"ing":"strategy","tr":"strateji","level":"B2","d":0,"y":0},
+  {"ing":"process","tr":"süreç","level":"B2","d":0,"y":0},
+  {"ing":"structure","tr":"yapı","level":"B2","d":0,"y":0},
+  {"ing":"method","tr":"yöntem","level":"B2","d":0,"y":0},
+  {"ing":"feature","tr":"özellik","level":"B2","d":0,"y":0},
+  {"ing":"issue","tr":"sorun / konu","level":"B2","d":0,"y":0},
+  {"ing":"challenge","tr":"zorluk","level":"B2","d":0,"y":0},
+  {"ing":"solution","tr":"çözüm","level":"B2","d":0,"y":0},
+  {"ing":"outcome","tr":"sonuç","level":"B2","d":0,"y":0},
+
+  {"ing":"requirement","tr":"gereksinim","level":"B2","d":0,"y":0},
+  {"ing":"resource","tr":"kaynak","level":"B2","d":0,"y":0},
+  {"ing":"efficiency","tr":"verimlilik","level":"B2","d":0,"y":0},
+  {"ing":"performance","tr":"performans","level":"B2","d":0,"y":0},
+  {"ing":"capacity","tr":"kapasite","level":"B2","d":0,"y":0},
+  {"ing":"impact","tr":"etki","level":"B2","d":0,"y":0},
+  {"ing":"benefit","tr":"fayda","level":"B2","d":0,"y":0},
+  {"ing":"drawback","tr":"dezavantaj","level":"B2","d":0,"y":0},
+  {"ing":"alternative","tr":"alternatif","level":"B2","d":0,"y":0},
+  {"ing":"priority","tr":"öncelik","level":"B2","d":0,"y":0},
+
+  {"ing":"maintain","tr":"sürdürmek / korumak","level":"B2","d":0,"y":0},
+  {"ing":"implement","tr":"uygulamak","level":"B2","d":0,"y":0},
+  {"ing":"optimize","tr":"optimize etmek","level":"B2","d":0,"y":0},
+  {"ing":"eliminate","tr":"ortadan kaldırmak","level":"B2","d":0,"y":0},
+  {"ing":"adapt","tr":"uyum sağlamak","level":"B2","d":0,"y":0},
+  {"ing":"monitor","tr":"izlemek","level":"B2","d":0,"y":0},
+  {"ing":"resolve","tr":"çözümlemek","level":"B2","d":0,"y":0},
+  {"ing":"justify","tr":"haklı çıkarmak","level":"B2","d":0,"y":0},
+  {"ing":"negotiate","tr":"müzakere etmek","level":"B2","d":0,"y":0},
+  {"ing":"emphasize","tr":"vurgulamak","level":"B2","d":0,"y":0},
+
+
+
+
+
+
+
+
+  
+  {"ing":"advocate","tr":"savunmak / desteklemek","level":"C1","d":0,"y":0},
+  {"ing":"allocate","tr":"tahsis etmek","level":"C1","d":0,"y":0},
+  {"ing":"anticipate","tr":"öngörmek","level":"C1","d":0,"y":0},
+  {"ing":"articulate","tr":"net ifade etmek","level":"C1","d":0,"y":0},
+  {"ing":"assess","tr":"değerlendirmek","level":"C1","d":0,"y":0},
+  {"ing":"attribute","tr":"atfetmek","level":"C1","d":0,"y":0},
+  {"ing":"coherent","tr":"tutarlı","level":"C1","d":0,"y":0},
+  {"ing":"comprehensive","tr":"kapsamlı","level":"C1","d":0,"y":0},
+  {"ing":"conceive","tr":"tasarlamak / düşünmek","level":"C1","d":0,"y":0},
+  {"ing":"constrain","tr":"kısıtlamak","level":"C1","d":0,"y":0},
+
+  {"ing":"derive","tr":"türetmek / elde etmek","level":"C1","d":0,"y":0},
+  {"ing":"diminish","tr":"azalmak / azaltmak","level":"C1","d":0,"y":0},
+  {"ing":"elaborate","tr":"detaylandırmak","level":"C1","d":0,"y":0},
+  {"ing":"empirical","tr":"deneysel","level":"C1","d":0,"y":0},
+  {"ing":"endeavor","tr":"çaba / girişim","level":"C1","d":0,"y":0},
+  {"ing":"enhance","tr":"geliştirmek","level":"C1","d":0,"y":0},
+  {"ing":"explicit","tr":"açık / net","level":"C1","d":0,"y":0},
+  {"ing":"feasible","tr":"uygulanabilir","level":"C1","d":0,"y":0},
+  {"ing":"fundamental","tr":"temel","level":"C1","d":0,"y":0},
+  {"ing":"hypothesis","tr":"hipotez","level":"C1","d":0,"y":0},
+
+  {"ing":"implicit","tr":"örtük","level":"C1","d":0,"y":0},
+  {"ing":"inevitable","tr":"kaçınılmaz","level":"C1","d":0,"y":0},
+  {"ing":"integrate","tr":"entegre etmek","level":"C1","d":0,"y":0},
+  {"ing":"justify","tr":"gerekçelendirmek","level":"C1","d":0,"y":0},
+  {"ing":"manifest","tr":"belirgin / ortaya koymak","level":"C1","d":0,"y":0},
+  {"ing":"notion","tr":"kavram","level":"C1","d":0,"y":0},
+  {"ing":"paradigm","tr":"paradigma","level":"C1","d":0,"y":0},
+  {"ing":"predominant","tr":"baskın","level":"C1","d":0,"y":0},
+  {"ing":"preliminary","tr":"ön","level":"C1","d":0,"y":0},
+  {"ing":"profound","tr":"derin","level":"C1","d":0,"y":0},
+
+  {"ing":"rationale","tr":"gerekçe","level":"C1","d":0,"y":0},
+  {"ing":"refine","tr":"iyileştirmek","level":"C1","d":0,"y":0},
+  {"ing":"reinforce","tr":"pekiştirmek","level":"C1","d":0,"y":0},
+  {"ing":"subsequent","tr":"sonraki","level":"C1","d":0,"y":0},
+  {"ing":"sufficient","tr":"yeterli","level":"C1","d":0,"y":0},
+  {"ing":"synthesize","tr":"sentezlemek","level":"C1","d":0,"y":0},
+  {"ing":"theoretical","tr":"teorik","level":"C1","d":0,"y":0},
+  {"ing":"ultimately","tr":"nihayetinde","level":"C1","d":0,"y":0},
+  {"ing":"validate","tr":"doğrulamak","level":"C1","d":0,"y":0},
+  {"ing":"whereas","tr":"oysa / -iken","level":"C1","d":0,"y":0},
+
+
+
+
+
+
+
+
+  
+  {"ing":"abide","tr":"uymak","level":"C2","d":0,"y":0},
+  {"ing":"acquiesce","tr":"sessizce kabul etmek","level":"C2","d":0,"y":0},
+  {"ing":"ameliorate","tr":"iyileştirmek","level":"C2","d":0,"y":0},
+  {"ing":"arbitrary","tr":"keyfi","level":"C2","d":0,"y":0},
+  {"ing":"assertive","tr":"iddialı / kendinden emin","level":"C2","d":0,"y":0},
+  {"ing":"belligerent","tr":"saldırgan","level":"C2","d":0,"y":0},
+  {"ing":"candor","tr":"açıklık / dürüstlük","level":"C2","d":0,"y":0},
+  {"ing":"circumvent","tr":"etrafından dolaşmak / aşmak","level":"C2","d":0,"y":0},
+  {"ing":"coerce","tr":"zorlamak","level":"C2","d":0,"y":0},
+  {"ing":"convoluted","tr":"karmaşık","level":"C2","d":0,"y":0},
+
+  {"ing":"corroborate","tr":"doğrulamak","level":"C2","d":0,"y":0},
+  {"ing":"cryptic","tr":"üstü kapalı / gizemli","level":"C2","d":0,"y":0},
+  {"ing":"detrimental","tr":"zararlı","level":"C2","d":0,"y":0},
+  {"ing":"disparity","tr":"eşitsizlik / fark","level":"C2","d":0,"y":0},
+  {"ing":"elusive","tr":"zor yakalanan","level":"C2","d":0,"y":0},
+  {"ing":"embezzle","tr":"zimmete geçirmek","level":"C2","d":0,"y":0},
+  {"ing":"exacerbate","tr":"kötüleştirmek","level":"C2","d":0,"y":0},
+  {"ing":"exemplify","tr":"örneklemek","level":"C2","d":0,"y":0},
+  {"ing":"fastidious","tr":"aşırı titiz","level":"C2","d":0,"y":0},
+  {"ing":"fortuitous","tr":"şans eseri","level":"C2","d":0,"y":0},
+
+  {"ing":"hackneyed","tr":"basmakalıp","level":"C2","d":0,"y":0},
+  {"ing":"idiosyncrasy","tr":"kendine özgü özellik","level":"C2","d":0,"y":0},
+  {"ing":"impeccable","tr":"kusursuz","level":"C2","d":0,"y":0},
+  {"ing":"incessant","tr":"aralıksız","level":"C2","d":0,"y":0},
+  {"ing":"juxtapose","tr":"yan yana koymak","level":"C2","d":0,"y":0},
+  {"ing":"lucid","tr":"açık / berrak","level":"C2","d":0,"y":0},
+  {"ing":"meticulous","tr":"çok dikkatli","level":"C2","d":0,"y":0},
+  {"ing":"nonchalant","tr":"umursamaz","level":"C2","d":0,"y":0},
+  {"ing":"obfuscate","tr":"bilerek karmaşıklaştırmak","level":"C2","d":0,"y":0},
+  {"ing":"ostentatious","tr":"gösterişli","level":"C2","d":0,"y":0},
+
+  {"ing":"pervasive","tr":"yaygın","level":"C2","d":0,"y":0},
+  {"ing":"pragmatic","tr":"pragmatik","level":"C2","d":0,"y":0},
+  {"ing":"quintessential","tr":"en tipik","level":"C2","d":0,"y":0},
+  {"ing":"resilient","tr":"dayanıklı","level":"C2","d":0,"y":0},
+  {"ing":"scrutinize","tr":"didik didik incelemek","level":"C2","d":0,"y":0},
+  {"ing":"spurious","tr":"asılsız","level":"C2","d":0,"y":0},
+  {"ing":"tenuous","tr":"zayıf / belirsiz","level":"C2","d":0,"y":0},
+  {"ing":"ubiquitous","tr":"her yerde bulunan","level":"C2","d":0,"y":0},
+  {"ing":"unwarranted","tr":"yersiz","level":"C2","d":0,"y":0},
+  {"ing":"vindicate","tr":"aklamak / haklı çıkarmak","level":"C2","d":0,"y":0}
+]
         save_words(words)
         return words
 
