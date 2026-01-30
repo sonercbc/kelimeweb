@@ -291,31 +291,40 @@ def index():
     words = load_words()
     last = None
     wrong = False
-    correct = ""
-
+    show_correct = ""
+    
     if request.method == "POST":
-        ing = request.form["ing"]
-        answer = request.form["answer"].strip().lower()
-        for w in words:
-            if w["ing"] == ing:
-                correct_ans = w["tr"] if answer != w["tr"] else w["ing"]
-                if answer in (w["tr"], w["ing"]):
-                    w["d"] += 1
-                else:
-                    w["y"] += 1
-                    wrong = True
-                    correct = correct_ans
-                save_words(words)
-                last = ing
-                break
+        ing = request.form.get("ing", "")
+        user_answer = request.form.get("answer", "").strip().lower()
 
-    word, direction, question, answer = pick_word(words, last)
+        direction = request.form.get("direction", "")
+        correct_answer = request.form.get("correct_answer", "").strip().lower()
+
+        # ilgili kelimeyi bul
+        w = next((x for x in words if x["ing"] == ing), None)
+        if w:
+            # sadece o soru yönünün cevabı doğru kabul edilir
+            if user_answer == correct_answer:
+                w["d"] += 1
+            else:
+                w["y"] += 1
+                wrong = True
+                show_correct = correct_answer
+
+            save_words(words)
+            last = ing
+
+    # yeni soru seç
+    word, direction, question, correct_answer = pick_word(words, last)
+
     return render_template_string(
         HTML,
         question=question,
-        word=type("obj",(object,),word),
+        word=type("obj", (object,), word),
         wrong=wrong,
-        correct=answer
+        correct=show_correct,          # yanlışsa ekranda gösterilecek
+        direction=direction,           # hidden input
+        correct_answer=correct_answer  # hidden input
     )
 
 @app.route("/add", methods=["POST"])
