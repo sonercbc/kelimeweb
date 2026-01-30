@@ -425,21 +425,23 @@ def stats():
         """
 
     # butonlar (ALL dahil)
-   def lvl_btn(lvl):
-    cls = "btn active" if level == lvl else "btn secondary"
-    return f'<a class="{cls}" href="/stats?level={lvl}">{lvl}</a>'
+      # butonlar (ALL dahil)
+    def lvl_btn(lvl):
+        cls = "btn active" if level == lvl else "btn secondary"
+        return f'<a class="{cls}" href="/stats?level={lvl}">{lvl}</a>'
 
-level_buttons = f"""
-<div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-  <a class="{'btn active' if level=='ALL' else 'btn secondary'}" href="/stats?level=ALL">ALL</a>
-  {lvl_btn('A1')}
-  {lvl_btn('A2')}
-  {lvl_btn('B1')}
-  {lvl_btn('B2')}
-  {lvl_btn('C1')}
-  {lvl_btn('C2')}
-</div>
-"""
+    level_buttons = f"""
+    <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+      <a class="{'btn active' if level=='ALL' else 'btn secondary'}" href="/stats?level=ALL">ALL</a>
+      {lvl_btn('A1')}
+      {lvl_btn('A2')}
+      {lvl_btn('B1')}
+      {lvl_btn('B2')}
+      {lvl_btn('C1')}
+      {lvl_btn('C2')}
+    </div>
+    """
+
 
 
     return f"""
