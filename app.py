@@ -394,7 +394,7 @@ def add():
 
 @app.route("/stats")
 def stats():
-    # seviye seçimi (querystring)
+    # seviye seçimi
     level = request.args.get("level", "ALL").upper()
     valid_levels = ["A1", "A2", "B1", "B2", "C1", "C2", "ALL"]
     if level not in valid_levels:
@@ -403,46 +403,42 @@ def stats():
     words = load_words()
 
     # filtre
-    if level != "ALL":
-        filtered = [w for w in words if w.get("level", "A1").upper() == level]
-    else:
+    if level == "ALL":
         filtered = words
+    else:
+        filtered = [w for w in words if w.get("level", "A1").upper() == level]
 
+    # tablo satırları
     rows = ""
     for w in filtered:
-        total = int(w.get("d", 0)) + int(w.get("y", 0))
-        pct = int((int(w.get("d", 0)) / total) * 100) if total else 0
+        d = int(w.get("d", 0))
+        y = int(w.get("y", 0))
+        total = d + y
+        pct = int((d / total) * 100) if total else 0
 
         rows += f"""
         <tr>
-            <td><b>{w['ing']}</b></td>
-            <td>{w['tr']}</td>
+            <td><b>{w.get('ing','')}</b></td>
+            <td>{w.get('tr','')}</td>
             <td>{w.get('level','A1')}</td>
-            <td>{w.get('d',0)}</td>
-            <td>{w.get('y',0)}</td>
+            <td>{d}</td>
+            <td>{y}</td>
             <td>%{pct}</td>
         </tr>
         """
 
-    # butonlar (ALL dahil)
-      # butonlar (ALL dahil)
-    def lvl_btn(lvl):
+    # butonlar (aktif olan farklı class)
+    def btn(lvl, text=None):
+        text = text or lvl
         cls = "btn active" if level == lvl else "btn secondary"
-        return f'<a class="{cls}" href="/stats?level={lvl}">{lvl}</a>'
+        return f'<a class="{cls}" href="/stats?level={lvl}">{text}</a>'
 
-    level_buttons = f"""
-    <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-      <a class="{'btn active' if level=='ALL' else 'btn secondary'}" href="/stats?level=ALL">ALL</a>
-      {lvl_btn('A1')}
-      {lvl_btn('A2')}
-      {lvl_btn('B1')}
-      {lvl_btn('B2')}
-      {lvl_btn('C1')}
-      {lvl_btn('C2')}
-    </div>
-    """
-
-
+    level_buttons = (
+        '<div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">'
+        + btn("ALL", "ALL")
+        + btn("A1") + btn("A2") + btn("B1") + btn("B2") + btn("C1") + btn("C2")
+        + "</div>"
+    )
 
     return f"""
 <!doctype html>
@@ -489,21 +485,19 @@ def stats():
       border-radius:14px;
       font-weight:700;
       white-space:nowrap;
+      display:inline-block;
     }}
     .btn.secondary{{
       background: rgba(255,255,255,.08);
       color:var(--text);
       border:1px solid var(--line);
     }}
-
-/* AKTİF SEVİYE BUTONU */
-.btn.active{
-  background: linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
-  color:#07111f;
-  box-shadow: 0 10px 20px rgba(110,231,255,.18);
-  border:none;
-}
-
+    .btn.active{{
+      background: linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
+      color:#07111f;
+      box-shadow: 0 10px 20px rgba(110,231,255,.18);
+      border:none;
+    }}
 
     .card{{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -569,7 +563,6 @@ def stats():
 </body>
 </html>
 """
-
 
 
 
