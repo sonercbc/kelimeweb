@@ -46,6 +46,8 @@ def bootstrap_users():
         "soner": {"pw": generate_password_hash("1234"), "role": "admin"},
         "ali": {"pw": generate_password_hash("1234"), "role": "user"},
         "ayse": {"pw": generate_password_hash("1234"), "role": "user"},
+        "emine": {"pw": generate_password_hash("soner"), "role": "user"},
+        "orhan": {"pw": generate_password_hash("soner"), "role": "user"},
     }
     save_users(users)
 def reset_users_json():
@@ -53,6 +55,8 @@ def reset_users_json():
         "soner": {"pw": generate_password_hash("1234"), "role": "admin"},
         "ali":   {"pw": generate_password_hash("1234"), "role": "user"},
         "ayse":  {"pw": generate_password_hash("1234"), "role": "user"},
+        "emine": {"pw": generate_password_hash("soner"), "role": "user"},
+        "orhan": {"pw": generate_password_hash("soner"), "role": "user"},
     }
     save_users(users)
 
