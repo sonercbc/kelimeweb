@@ -7,7 +7,7 @@ from flask import Flask, request, redirect, url_for, render_template_string, ses
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-ensure_admin()
+
 
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 
@@ -74,6 +74,7 @@ def admin_required(fn):
             return "403 Forbidden (admin only)", 403
         return fn(*args, **kwargs)
     return wrapper
+
 
 
 
@@ -728,7 +729,7 @@ HTML = """
 </html>
 """
 
-
+ensure_admin()
 # ----------------- ROUTES -----------------
 @app.route("/login", methods=["GET", "POST"])
 def login():
