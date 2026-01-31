@@ -27,8 +27,20 @@ def ensure_admin():
         "pw": generate_password_hash(admin_pass),
         "role": "admin",
     }
+save_users(users)
+def bootstrap_users():
+    if os.path.exists(USERS_FILE):
+        return
 
+    users = {
+        "soner": {"pw": generate_password_hash("1234"), "role": "admin"},
+        "ali":   {"pw": generate_password_hash("1234"), "role": "user"},
+        "ayse":  {"pw": generate_password_hash("1234"), "role": "user"},
+    }
     save_users(users)
+
+    
+    
 
 
 # ----------------- USER HELPERS -----------------
@@ -730,6 +742,7 @@ HTML = """
 </html>
 """
 
+bootstrap_users()
 ensure_admin()
 # ----------------- ROUTES -----------------
 @app.route("/login", methods=["GET", "POST"])
