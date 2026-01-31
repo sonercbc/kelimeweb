@@ -44,25 +44,13 @@ def bootstrap_users():
 
     users = {
     "soner": {"pw": generate_password_hash("1234"), "role": "admin"},
-    "ali": {"pw": generate_password_hash("soner"), "role": "user"},
-    "ayse": {"pw": generate_password_hash("soner"), "role": "user"},
-    "emine": {"pw": generate_password_hash("1234"), "role": "user"},
-    "orhan": {"pw": generate_password_hash("1234"), "role": "user"},
-    "ensar": {"pw": generate_password_hash("soner"), "role": "user"},
-    "baki": {"pw": generate_password_hash("soner"), "role": "user"},
-    "yunus": {"pw": generate_password_hash("soner"), "role": "user"}
+
 }
     save_users(users)
 def reset_users_json():
     users = {
     "soner": {"pw": generate_password_hash("1234"), "role": "admin"},
-    "ali": {"pw": generate_password_hash("soner"), "role": "user"},
-    "ayse": {"pw": generate_password_hash("soner"), "role": "user"},
-    "emine": {"pw": generate_password_hash("1234"), "role": "user"},
-    "orhan": {"pw": generate_password_hash("1234"), "role": "user"},
-    "ensar": {"pw": generate_password_hash("soner"), "role": "user"},
-    "baki": {"pw": generate_password_hash("soner"), "role": "user"},
-    "yunus": {"pw": generate_password_hash("soner"), "role": "user"}
+ 
 }
     save_users(users)
 
