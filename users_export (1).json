@@ -1,0 +1,14 @@
+{
+  "soner": {
+    "pw": "scrypt:32768:8:1$MtjcrefcAfXrnlAf$e9f727df14101e1ea1606fa1e0e3f4431b0d1e888483051d31e63f2d78e35bc78909399e34969abf6f01c1c3f4c811e4faf01ce2c6e055aa4f316e07fd940292",
+    "role": "admin"
+  },
+  "ali": {
+    "pw": "scrypt:32768:8:1$4o7jCSfH5dhhWBRi$bb828237fe8d5be244cdc9967d3783c32f78dd92e92b6ac4956890a674267ef87698175fc1bfc18085416dd1ec6c1e754cacbd7af735093965fd662b7af4235b",
+    "role": "user"
+  },
+  "ayse": {
+    "pw": "scrypt:32768:8:1$FjghOMlV6yuPY2xx$ebc58d3c7523c4eb24dc52136f85763cd010e32b9361097324987804961cebd67697435e1d48042038c65b84b0c1de3e144b10b2ecde3fe465e2c0506bc03a96",
+    "role": "user"
+  }
+}
