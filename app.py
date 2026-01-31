@@ -38,14 +38,14 @@ def data_file_for(username: str):
 
 # ----------------- BOOTSTRAP / ADMIN -----------------
 def bootstrap_users():
-    """İlk kurulum: users.json yoksa örnek kullanıcıları oluştur."""
     if os.path.exists(USERS_FILE):
-        return
+        return  # dosya varsa DOKUNMA
 
     users = {
-    "soner": {"pw": generate_password_hash("1234"), "role": "admin"},
-
-}
+        "soner": {"pw": generate_password_hash("1234"), "role": "admin"},
+        "ali":   {"pw": generate_password_hash("1234"), "role": "user"},
+        "ayse":  {"pw": generate_password_hash("1234"), "role": "user"},
+    }
     save_users(users)
 def reset_users_json():
     users = {
@@ -58,7 +58,6 @@ reset_users_json()
 
 
 def ensure_admin():
-    """ENV ile admin'i her açılışta garanti et. (ADMIN_USER / ADMIN_PASS)"""
     admin_user = os.environ.get("ADMIN_USER")
     admin_pass = os.environ.get("ADMIN_PASS")
     if not admin_user or not admin_pass:
@@ -72,8 +71,8 @@ def ensure_admin():
         "role": "admin",
     }
 
-    # ✅ ÖNEMLİ: kaydı burada yap
-    save_users(users)
+    save_users(users)  # ✅ mutlaka burada
+
 
 
 # ----------------- AUTH DECORATORS -----------------
