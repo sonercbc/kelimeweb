@@ -1,0 +1,14 @@
+{
+  "soner": {
+    "pw": "pbkdf2:sha256:260000$Q1yV8b8x4m1K$e7b2c6e5c8a6c0e8c7f8c2b9c4a1e2f7c9d8a0b6f5a3d2e1c0b9a8f7e6",
+    "role": "admin"
+  },
+  "ali": {
+    "pw": "pbkdf2:sha256:260000$Jp3Zx9Lm2K8Q$8a7c6d5e4f3b2a1c9e8d7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1",
+    "role": "user"
+  },
+  "ayse": {
+    "pw": "pbkdf2:sha256:260000$X7mK2LQ9Zp3J$1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2e3d4f5c6",
+    "role": "user"
+  }
+}
