@@ -1,14 +1,26 @@
 {
   "soner": {
-    "pw": "pbkdf2:sha256:260000$8mTtYb7XQpQ4r9a1$2b2f0b7a6b5c7b0a1a5f4c2b7f0d1d4c0d4c2c0f6c4b7f8a2c1e0a9b7c6d5e4f",
+    "pw": "scrypt:32768:8:1$jCLyxWrFUXDasxSC$896f2048cc65da804d4b5c9f350a14f5342813bb297246c54cb726ac9bb26a8a08993afbe7e8b4cf5eaebf44705992f49ab9224df70fe284e5dda82deefbe784",
     "role": "admin"
   },
   "ali": {
-    "pw": "pbkdf2:sha256:260000$uK9pQyZx3vL2nM1a$9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d",
+    "pw": "scrypt:32768:8:1$QCWOMPn6o1lzDvYp$8a9128683f43dfd1aa14efbab2629834786bfff72280793c7969539e663f2bf5981ae8d467d8a2547cd79dbdb9f0cb494fcf236ee20c8feb64fbf446eb0a4478",
     "role": "user"
   },
   "ayse": {
-    "pw": "pbkdf2:sha256:260000$QwErTyUiOpAsDfGh$0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b",
+    "pw": "scrypt:32768:8:1$viGdEgKTqNK7Jf3A$b9f654b6c1251fc8c684eaf14d48eb2bd3633e8c6fefc8b9bc69c29134bb0225b4807b810e0c660b1361385f573706e21cb03aaf7e31c23f8d66f6a657afd007",
+    "role": "user"
+  },
+  "eda": {
+    "pw": "scrypt:32768:8:1$FfLZnC8VYoTRmTWs$da3c525138877d12714319762046dca110c6768e24ebd03d83227f3d23ee834a873594ad8fa5d029dc11c4417d25c2787350dfca15818b3ae6f774ed7580aa45",
+    "role": "user"
+  },
+  "emine": {
+    "pw": "scrypt:32768:8:1$DK7VPRJT41FH2ueY$e2a7c179d297c2aa6de9b580a92b889139c5ea94914460dca082472bab36e94378122bbb5ea4b7569d099ae1b47f8a5c744297a6b575816854ae19655d5d8490",
+    "role": "user"
+  },
+  "orhan": {
+    "pw": "scrypt:32768:8:1$5CcAUfvZdDgWpjyt$a9d56b6c3feaa590532070e798a6790bc0514c43e9ad8975369e1923380e04bf848d9f4bd31c7b9ac707508e36f53a14cfe59496cc6534f6cac3eecb94c387c8",
     "role": "user"
   }
 }
