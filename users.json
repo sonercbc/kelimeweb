@@ -19,6 +19,14 @@
     "pw": "scrypt:32768:8:1$DK7VPRJT41FH2ueY$e2a7c179d297c2aa6de9b580a92b889139c5ea94914460dca082472bab36e94378122bbb5ea4b7569d099ae1b47f8a5c744297a6b575816854ae19655d5d8490",
     "role": "user"
   },
+  "muhittin": {
+    "pw": "scrypt:32768:8:1$DK7VPRJT41FH2ueY$e2a7c179d297c2aa6de9b580a92b889139c5ea94914460dca082472bab36e94378122bbb5ea4b7569d099ae1b47f8a5c744297a6b575816854ae19655d5d8490",
+    "role": "user"
+  },
+  "kemal": {
+    "pw": "scrypt:32768:8:1$DK7VPRJT41FH2ueY$e2a7c179d297c2aa6de9b580a92b889139c5ea94914460dca082472bab36e94378122bbb5ea4b7569d099ae1b47f8a5c744297a6b575816854ae19655d5d8490",
+    "role": "user"
+  },
   "orhan": {
     "pw": "scrypt:32768:8:1$5CcAUfvZdDgWpjyt$a9d56b6c3feaa590532070e798a6790bc0514c43e9ad8975369e1923380e04bf848d9f4bd31c7b9ac707508e36f53a14cfe59496cc6534f6cac3eecb94c387c8",
     "role": "user"
