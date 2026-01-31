@@ -12,28 +12,24 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 
 USERS_FILE = "users.json"
-ADMIN_USER = os.environ.get("ADMIN_USER")
-ADMIN_PASS = os.environ.get("ADMIN_PASS")
 
 def ensure_admin():
-    admin_user = os.environ.get("soner")
-    admin_pass = os.environ.get("1234")
+    admin_user = os.environ.get("ADMIN_USER")
+    admin_pass = os.environ.get("ADMIN_PASS")
     if not admin_user or not admin_pass:
         return
 
     users = load_users()
     uname = admin_user.strip().lower()
 
-    if uname not in users:
-        users[uname] = {"pw": generate_password_hash(admin_pass), "role": "admin"}
-    else:
-        users[uname]["role"] = "admin"
-        # ✅ env değişince şifre de değişsin:
-        users[uname]["pw"] = generate_password_hash(admin_pass)
+    # her açılışta admin'i garanti et + şifre env'e göre yenilensin
+    users[uname] = {
+        "pw": generate_password_hash(admin_pass),
+        "role": "admin",
+    }
 
     save_users(users)
 
-        save_users(users)
 
 # ----------------- USER HELPERS -----------------
 def load_users():
