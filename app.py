@@ -48,6 +48,15 @@ def bootstrap_users():
         "ayse": {"pw": generate_password_hash("1234"), "role": "user"},
     }
     save_users(users)
+def reset_users_json():
+    users = {
+        "soner": {"pw": generate_password_hash("1234"), "role": "admin"},
+        "ali":   {"pw": generate_password_hash("1234"), "role": "user"},
+        "ayse":  {"pw": generate_password_hash("1234"), "role": "user"},
+    }
+    save_users(users)
+
+reset_users_json()
 
 
 def ensure_admin():
