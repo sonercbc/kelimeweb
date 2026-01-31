@@ -7,6 +7,8 @@ from flask import Flask, request, redirect, url_for, render_template_string, ses
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
+ensure_admin()
+
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 
 USERS_FILE = "users.json"
@@ -1036,6 +1038,9 @@ tr td:last-child{border-radius:0 14px 14px 0}
 <div class="card">
   <h2 style="margin:0 0 6px">Admin Panel • Kullanıcılar</h2>
   <div class="small">Giriş yapan: <b>{{admin}}</b> • <a href="/">Quiz</a> • <a href="/logout">Çıkış</a></div>
+<div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+  <a class="btn" href="/admin/export/users">Users JSON indir</a>
+</div>
 
   <div style="margin-top:14px"></div>
   <table>
@@ -1082,6 +1087,23 @@ def admin_users():
             "data_file": data_file_for(uname),
         })
     return render_template_string(ADMIN_USERS_HTML, users=rows, admin=current_user())
+
+from flask import Response
+
+@app.route("/admin/export/users")
+@admin_required
+def admin_export_users():
+    users = load_users()
+
+    payload = json.dumps(users, ensure_ascii=False, indent=2)
+    return Response(
+        payload,
+        mimetype="application/json; charset=utf-8",
+        headers={
+            "Content-Disposition": 'attachment; filename="users_export.json"'
+        }
+    )
+
 
 @app.route("/admin/delete/<username>", methods=["POST"])
 @admin_required
