@@ -928,28 +928,12 @@ def admin_users():
 def admin_export_users():
     users = load_users()
 
-    lines = ["{"]
-
-    for i, (uname, data) in enumerate(users.items()):
-        role = data.get("role", "user")
-
-        # admin için şifreyi 1234 varsayalım, user'lar için "soner"
-        default_pw = "1234" if role == "admin" else "soner"
-
-        comma = "," if i < len(users) - 1 else ""
-        lines.append(
-            f'    "{uname}": {{"pw": generate_password_hash("{default_pw}"), "role": "{role}"}}{comma}'
-        )
-
-    lines.append("}")
-
-    payload = "\n".join(lines)
-
+    payload = json.dumps(users, ensure_ascii=False, indent=2)
     return Response(
         payload,
-        mimetype="text/plain; charset=utf-8",
+        mimetype="application/json; charset=utf-8",
         headers={
-            "Content-Disposition": 'attachment; filename="users_export.py"'
+            "Content-Disposition": 'attachment; filename="users_export.json"'
         }
     )
 
