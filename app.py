@@ -658,8 +658,8 @@ def register():
             if username in users:
                 error = "Bu kullanıcı adı zaten var."
             else:
-                new_users = {"pw": generate_password_hash(password), "role": "user"}
-                users.append(new_users)
+                users[username] = {"pw": generate_password_hash(password), "role": "user"}
+                
                 save_users(users)
                 session["user"] = username
                 return redirect(url_for("index"))
