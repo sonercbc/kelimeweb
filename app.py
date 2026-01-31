@@ -16,18 +16,23 @@ ADMIN_USER = os.environ.get("ADMIN_USER")
 ADMIN_PASS = os.environ.get("ADMIN_PASS")
 
 def ensure_admin():
-    if not ADMIN_USER or not ADMIN_PASS:
+    admin_user = os.environ.get("soner")
+    admin_pass = os.environ.get("1234")
+    if not admin_user or not admin_pass:
         return
+
     users = load_users()
-    uname = ADMIN_USER.strip().lower()
+    uname = admin_user.strip().lower()
 
     if uname not in users:
-        users[uname] = {"pw": generate_password_hash(ADMIN_PASS), "role": "admin"}
-        save_users(users)
+        users[uname] = {"pw": generate_password_hash(admin_pass), "role": "admin"}
     else:
         users[uname]["role"] = "admin"
-        if "pw" not in users[uname]:
-            users[uname]["pw"] = generate_password_hash(ADMIN_PASS)
+        # ✅ env değişince şifre de değişsin:
+        users[uname]["pw"] = generate_password_hash(admin_pass)
+
+    save_users(users)
+
         save_users(users)
 
 # ----------------- USER HELPERS -----------------
